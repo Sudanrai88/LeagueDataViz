@@ -8,13 +8,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pycirclize import Circos
 
+# The list of players to aggregate data for and show in the radar charts, you can add or remove players from this list as needed
+# As long as the player is in the name_dict and agg_account dictionaries, they will be included in the radar charts
+# also any players that have played with the players in the name_dict and agg_account dictionaries CAN be included in the radar charts e.g. your nemesis
+# OR when you team says you hard lost against your laner, you can add them to this list and see how they did against you
+
 AGG_PLAYERS = [
     "Sudan", "Ethan", "Charlie", "Theo", "Robin", "Fubuki", "Tino", "Lewis", "James", "Miti", "Ohm",
     "WasAecac", "Szabi", "Kyle", "All_carry", "All_jungle", "All_support", "All_aram"
 ]
 
+# Change this to the path where your data is stored, and where the radar charts will be saved to
 BASE_PATH = "C:/Users/SudanRai/.spyder-py3/PythonProjects/Model1/data"
 
+# The configuration includes the file path, filter role, output file name, reference name, metrics to plot, and columns for the radar chart
+# e.g. the metrics of comparison is different between jungle and support, so the columns are different too!
 ROLE_CONFIGS = {
     "carry": {
         "file": f"{BASE_PATH}/classic_stats_radar_ready_short.csv",

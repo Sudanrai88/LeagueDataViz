@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-# gamemodes are classic or aram so far
+# gamemodes are classic or aram so far, change this to either "classic" or "aram" to save the data
 gamemode = "classic"
 # --- PARAMETERS ---
 CSV_IN = Path(f'C:/Users/SudanRai/.spyder-py3/PythonProjects/Model1/data/{gamemode}_stats.csv')
@@ -19,10 +19,11 @@ if dupe_cols:
 # --- 2. IDENTIFY NUMERIC METRICS ---
 numeric_cols = df.select_dtypes(include="number").columns.tolist()
 
-# --- 3. ROLE‑AWARE MIN‑MAX NORMALISATION ---
+# --- 3. ROLE‑AWARE MIN‑MAX NORMALISATION, this is completed against ALL players that the selected 'name_dict' has played with (past 100 games) ---
 norm_df = df.copy()
 for col in numeric_cols:
-    # Compute 5th and 95th percentiles for each role
+    # Compute 1st and 93rd percentiles for each role, this can be played around with to make your group of friends look better or worse
+    # e.g. 0.01 and 0.93 are the 1st and 93rd percentiles, respectively.
     role_q = df.groupby(ROLE_COL)[col].quantile([0.01, 0.93]).unstack()
     role_q.columns = ["q05", "q95"]
 
@@ -33,27 +34,3 @@ for col in numeric_cols:
     norm_df[col + "_norm"] = ((df[col] - r05) / denom).clip(0, 1)  # Clip to [0, 1] range
 
 norm_df.to_csv(CSV_OUT_2)
-
-# --- 4. LONG FORMAT (ONE ROW = ONE METRIC VALUE) ---
-id_vars = [c for c in norm_df.columns if c not in numeric_cols and not c.endswith("_norm")]
-
-raw_long = norm_df.melt(id_vars=id_vars,
-                        value_vars=numeric_cols,
-                        var_name="Metric",
-                        value_name="Raw_Value")
-
-norm_long = norm_df.melt(id_vars=id_vars,
-                         value_vars=[c + "_norm" for c in numeric_cols],
-                         var_name="Metric_norm",
-                         value_name="Normalized_Value")
-
-norm_long["Metric"] = norm_long["Metric_norm"].str[:-5]
-norm_long = norm_long.drop(columns="Metric_norm")
-
-radar_ready = pd.merge(raw_long, norm_long, on=id_vars + ["Metric"])
-
-# --- 5. SAVE ---
-radar_ready.to_csv(CSV_OUT, index=False)
-
-
-print(f"File saved to: {CSV_OUT}")

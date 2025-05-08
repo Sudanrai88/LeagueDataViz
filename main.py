@@ -21,7 +21,8 @@ print(api_key)
 data_dir = "C:/Users/SudanRai/.spyder-py3/PythonProjects/Model1/data"
 read_ids_path = os.path.join(data_dir, "read_match_ids.csv")
 
-
+#Add your own name_dict and agg_account dictionaries here
+#These dictionaries map player names to their respective regions and aggregated account names.
 name_dict = {
     "Bensaski": "EUW", "c1ev": "EUW", "chazzapro": "chaz", "SlashFang": "EUW",
     "Arrr": "EUW", "Combo Goblin": "EUW", "CJA IeattheGOD": "EUW",
@@ -72,7 +73,7 @@ else:
 all_files = glob.glob(os.path.join(data_dir, "match_batch*"))
 all_batches = pd.concat([pd.read_csv(f) for f in all_files], ignore_index=True)
 
-# === Feature Selection ===
+# === Feature Selection === (Check full list of columns in the data and seelct the ones you want to keep)
 selected_cols = [
     "riotIdGameName", "puuid", "challenges.damagePerMinute", "challenges.dodgeSkillShotsSmallWindow",
     "challenges.goldPerMinute", "challenges.kda", "challenges.killParticipation",
@@ -91,19 +92,18 @@ selected_cols = [
     "item4", "item5", "item6", "totalHealsOnTeammates", "challenges.effectiveHealAndShielding", "totalTimeCCDealt", "challenges.wardTakedownsBefore20M"
 ]
 
-
 existing_cols = [col for col in selected_cols if col in all_batches.columns]
 
+# Some extra columns to be added derived from the existing ones
 match_data_cut = all_batches[existing_cols]
 match_data_cut["junglecsPerMinute"] = match_data_cut["neutralMinionsKilled"] / (match_data_cut["gameDuration"] / 60)
 match_data_cut["csPerMinute"] = match_data_cut["totalMinionsKilled"] / (match_data_cut["gameDuration"] / 60)
 match_data_cut["timeDead"] = match_data_cut["totalTimeSpentDead"] / match_data_cut["gameDuration"]
 
-
+#Temp storage if needed / want to check
 match_data_cut.to_csv(os.path.join(data_dir, "columnValuesCut.csv"), index=False)
-# temp storage layer, not really needed actually
 
-# === Filter and Label Roles ===
+
 match_data = pd.read_csv(os.path.join(data_dir, "columnValuesCut.csv"))
 
 
