@@ -105,6 +105,8 @@ match_data_cut.to_csv(os.path.join(data_dir, "columnValuesCut.csv"), index=False
 
 match_data = pd.read_csv(os.path.join(data_dir, "columnValuesCut.csv"))
 
-
+# The aggregate_classic service separates the data into different roles and groups data by user + role.
+# Jungle role is identified by finding users with summerner1Id being the smite ID (11)
+# Support role is identified by finding users with all variations of the 'compulsory' support items e.g. world atlas, bloodsong, zak zak etc 
 api_service.aggregate_classic(match_data, riotID, agg_account, data_dir)
 api_service.aggregate_aram(match_data, riotID, agg_account, data_dir)

@@ -117,10 +117,12 @@ def aggregate_classic(match_data, riotID, agg_account, data_dir):
     match_data = match_data.drop_duplicates(subset=["gameId", "puuid"])
     match_data = match_data[match_data["gameDuration"] > 600]
     match_data = match_data[match_data["gameMode"] == 'CLASSIC']
+    #If this is added it will only aggregate the data for the selected user, if not it will aggregate all users in the match.
+    #Use to find only data between your friends and you
     #match_data = match_data[match_data["riotIdGameName"].isin(riotID)]
     match_data = match_data.replace({"riotIdGameName": agg_account})
 
-    # Role assignment
+    # Role assignment by checking items and summoner spells
     itemcolumn = ["item0", "item1", "item2", "item3", "item4", "item5", "item6"]
     jngcolumn = ["summoner1Id", "summoner2Id"]
     supp_items = [3865, 3866, 3867, 3877, 3869, 3870, 3876, 3871]
