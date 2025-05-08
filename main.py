@@ -2,7 +2,6 @@
 """
 @author: SudanRai
 
-Test radar chart metrics, something similar to be done with HR data in warehouse? Can aggregate Employee/ Department metrics e.g. Turnover, Absence, Holidays taken, ER cases, WFH, Flex requests etc.
 """
 
 import pandas as pd
